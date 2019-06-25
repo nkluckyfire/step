@@ -13,12 +13,8 @@
 4. 步骤引擎在执行步骤时，通过处理【步骤函数】的返回值或者promise的最终值，来决策调用下一步步骤
 # 使用说明
 ## 安装
-```
-npm install @baidu/universe-step-engine
-```
 ## 使用
 ```javascript
-import se from '@baidu/universe-step-engine';
 se('instance-name').step('step-name', () => {
     ///
     /// step 执行函数
