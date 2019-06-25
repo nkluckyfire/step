@@ -1,0 +1,28 @@
+{
+  "name": "jsflow",
+  "version": "1.0.0",
+  "description": "javascript framework for flow",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nkluckyfire/jsflow.git"
+  },
+  "keywords": [
+    "flow",
+    "node",
+    "javascript",
+    "group",
+    "serial",
+    "chrod",
+    "map"
+  ],
+  "author": "aosyang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nkluckyfire/jsflow/issues"
+  },
+  "homepage": "https://github.com/nkluckyfire/jsflow#readme"
+}
