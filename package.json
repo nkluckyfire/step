@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nkluckyfire/jsflow.git"
+    "url": "git+https://github.com/nkluckyfire/step.git"
   },
   "keywords": [
     "flow",
@@ -22,7 +22,7 @@
   "author": "aosyang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nkluckyfire/jsflow/issues"
+    "url": "https://github.com/nkluckyfire/step/issues"
   },
-  "homepage": "https://github.com/nkluckyfire/jsflow#readme"
+  "homepage": "https://github.com/nkluckyfire/step#readme"
 }
