@@ -77,6 +77,15 @@ const Map = (gs, cb = (val, idx) => 0) => {
 }
 const M = Map;
 
+/**
+ * 先group，再chain
+ * @param {*} reduce chain函数
+ * @param  {...any} gs group操作
+ */
+const Chord = (reduce, ...gs) => {
+    return () => G(...gs)().then(r => reduce(r));
+};
+const H = Chord;
 
 const vs = v => console.log(v);
 
@@ -84,11 +93,12 @@ function test_all() {
     C(1, () => 2, '${arg + 1}', ((arg, num) => arg + num).s(1), arg => arg)().then(vs); // output: 31
     C(1, () => 2, '${arg + 1}', arg => Number(arg), ((arg, num) => arg + num).s(1), arg => arg)().then(vs); // output: 4
     G(1, () => 2, 3, () => () => () => 4)().then(vs); // output: [1, 2, 3, 4]
+    H(arr => arr, 1, 2, 3, 4, 5, 6, 7)().then(vs); // output: [1,2,3,4,5,6,7]
     M(G(1,2, C(3, 4, 5), 6, C(7, arg => arg * 10), () => 8), v => v * 10)().then(vs); // output: [10, 20, 50, 60, 700, 80]
 }
 
 test_all();
 
 module.exports = {
-    Group, G, Chain, C, Map, M
+    Group, G, Chain, C, Map, M, Chord, H
 }
