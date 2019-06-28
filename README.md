@@ -24,20 +24,35 @@ test_all();
 1. 任何编排函数的输入不限制类型，即不要求必须是promise
 2. 内部对Function做了扩展，支持.s操作用于生成函数签名。
 
-```javascript
-function test(a, b, c) {
-    console.log(a, b, c)
-}
-// 直接调用
-test(1, 2, 3);
-// 通过函数签名调用
-test.s(2, 3)(1);
-// 在chain中使用，可以方便的输入更多参数
-Chain(1, test.s(2, 3))();
-// 以上三种方式得到的结果是一样的，如果不实用函数签名方式，则是另外的结果
-Chain(1, test(1,2,3))();
-// 此时，先执行了test(1,2,3)，然后chain操作是无意义的操作
-```
+    ```javascript
+    function test(a, b, c) {
+        console.log(a, b, c)
+    }
+    // 直接调用
+    test(1, 2, 3);
+    // 通过函数签名调用å
+    test.s(2, 3)(1);
+    // 在chain中使用，可以方便的输入更多参数
+    Chain(1, test.s(2, 3))();
+    // 以上三种方式得到的结果是一样的，如果不实用函数签名方式，则是另外的结果
+    Chain(1, test(1,2,3))();
+    // 此时，先执行了test(1,2,3)，然后chain操作是无意义的操作
+    ```
+
+3. Function扩展hook，支持af前置hook和bf后置hook
+
+    ```javascript
+    function test_hook(a, b, c) {
+        console.log("test-hook", a, b, c);
+        return a + b +c;
+    }
+
+    test_hook.bf((a, b, c) => console.log("test-hook-before", a, b, c)).af(r => console.log("test-hook-after", r))(1, 2, 3);
+    // output:
+    // test-hook-before 1 2 3
+    // test-hook 1 2 3
+    // test-hook-after 6
+    ```
 
 #### Group,G编组操作
 
