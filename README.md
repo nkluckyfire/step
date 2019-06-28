@@ -13,6 +13,7 @@ function test_all() {
     G(1, () => 2, 3, () => () => () => 4)().then(vs); // output: [1, 2, 3, 4]
     H(arr => arr, 1, 2, 3, 4, 5, 6, 7)().then(vs); // output: [1,2,3,4,5,6,7]
     M(G(1,2, C(3, 4, 5), 6, C(7, arg => arg * 10), () => 8), v => v * 10)().then(vs); // output: [10, 20, 50, 60, 700, 80]
+    AnyOne((v, i) => console.log(v, i), 1, 2, 3, 4 ,5)().then(vs); // output: [undefined, undefined, undefined, undefined, undefined]
 }
 
 test_all();
