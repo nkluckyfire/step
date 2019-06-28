@@ -144,11 +144,11 @@ function test_hook(a, b, c) {
 
 
 module.exports = {
-    Group, G,
-    Chain, C,
-    Map, M,
-    Chord, H,
-    AnyOne, A,
-    FunctionSure, F,
-    ExtractFunction, E
+    Group, G, // group：编组操作
+    Chain, C, // chain：串联操作
+    Map, M, //   Map： 映射操作
+    Chord, H, // Chord: 编组串联操作
+    AnyOne, A, // AnyOne: 类似Group，但是每一个promise完成都有回掉
+    FunctionSure, F, // FunctionSure, 将一个输入强制转换为一个可以调用的函数
+    ExtractFunction, E // ExtractFunction，对一个输入进行循环调用，知道输出不再是一个函数。即高阶函数解压
 }
