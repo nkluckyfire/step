@@ -14,7 +14,7 @@ const F = FunctionSure;
  * 将输入转换为一个promise
  * @param {*} any 任意输入，可以是对象或者po甚至函数 
  */
-const PromiseSure = any => Promise.resolve(any);
+const PromiseSure = any => any instanceof Promise ? any : Promise.resolve(any);
 const P = PromiseSure;
 
 /**
