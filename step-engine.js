@@ -94,6 +94,14 @@ class StepEngine {
     this._catch = cb;
   }
 }
+
+/**
+ * 创建一个步骤引擎实例
+ * @param {*} name 实例的名字
+ */
+const Engine = name => new StepEngine(name);
+const E = Engine;
+
 class Test {
   constructor() {
     new StepEngine()
@@ -128,4 +136,6 @@ class Test {
   }
 }
 // new Test();
-module.exports = name => new StepEngine(name);
+module.exports = {
+    Engine, E
+};
