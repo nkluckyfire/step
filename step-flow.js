@@ -1,79 +1,141 @@
 /**
- * @file step-flow.js, 基于promise的调用编排框架
+ * @file step-engine.js, 步骤引擎，可以实现跳步。循环，延时等操作
  * @author aosyang<luckyfire@qq.com>
  */
-const {FunctionSure, F, ExtractFunction, E, PromiseSure, P} = require('./func-extends');
 
-/**
- * 编组调用，输入是函数，函数签名，对象，PO等
- * @param  {...any} fs 输入
- */
-const Group = (...fs) => {
-    return () => Promise.all(fs.map(v => P(E(v))));
-};
-const G = Group;
+const { P, E, F } = require("./func-extends");
 
-/**
- * 辅助串联函数
- * @param {*} cbs 回调
- * @param {*} idx 索引
- * @param {*} arg 参数
- */
-const _Chain = (cbs, idx, arg) => {
-    if (idx < cbs.length) {
-        let v = (cbs[idx]);
-        if (typeof v === 'function') {
-            arg = (v)(arg);
-        } else if (typeof v === 'string') {
-            arg = (new Function('arg', '{ return `' + v + '`}'))(arg);
-        } else {
-            arg = v;
-        }
-        return P(arg).then(r => _Chain(cbs, idx + 1, r));
+let seins = 1;
+
+const Log = console;
+class StepFlow {
+  constructor(name) {
+    this._name = name || `se#${seins++}#`;
+    this._catch = err => Log.error(err);
+    this._size = 0;
+    this._steps = {};
+  }
+  _trace(...args) {
+    Log.debug(`se-${this._name}`, ...args);
+  }
+  /**
+   * 真正的执行步骤
+   * @param {Promise<string>} p 下一步
+   * @param {*} params 下一步的参数，下一步的参数有上一步的返回决定
+   * @return {Object} 指向this
+   * @note
+   */
+  _step(p, params = undefined) {
+    return p.then(sp => {
+      let { cb, id, name, alias } = this._steps[sp] || {};
+      this._trace("step process:", sp, name, alias, id, params);
+      if (id === undefined) {
+        this._trace("step process: all");
+        return P(0);
+      }
+      try {
+        this._trace("----------------------", cb);
+        //
+        // 1. 回掉cb，cb的返回结果如下：
+        // (1) string 直接下下一步的名字
+        // (2) [string, params] 下一步的名字，和下一步的参数
+        // (3) Promise<[string, params]> 下一步的promise
+        // (4) Promise<string> 下一步的promise
+        // (5) undefined 默认的下一步
+        // 后面的处理主要是结构出next 和 params
+        //
+        return P(cb(params)).then(ret => {
+            if (ret === undefined) {
+                ret = {s: `sp-${id + 1}`};
+            } else if (ret instanceof Array) {
+                ret = {s: ret[0], p: ret[1] || undefined};
+            } else if (typeof ret === 'string') {
+                ret = {s: ret};
+            } else {
+                ret = {}
+            }
+            let {s, p} = ret;
+            return this._step(P(s), p);
+        }).catch(err => this._catch(err));
+      } catch (e) {
+        this._trace("step exception:", sp, e);
+        return Promise.reject(e);
+      }
+    });
+  }
+  step(name, cb) {
+    let alias = `sp-${++this._size}`;
+    let sp = name || alias;
+    let val = { cb: F(cb), id: this._size, name, alias };
+    this._trace("add step:", name, alias);
+    this._steps[sp] = val;
+    this._steps[alias] = val;
+    if (this._size === 1) {
+      this._step(P(sp)).catch(e => {
+        this._trace("step exception 1:", sp, e);
+        this._catch && this._catch(e);
+      });
     }
-    return P(arg);
+    return this;
+  }
+  sleep(tm = 0) {
+    return this.step(`sleep${this._size}`, () => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve();
+        }, tm);
+      });
+    });
+  }
+  loop(step) {
+    return this.step(`loop${this._size}`, () => step);
+  }
+  catch(cb) {
+    this._catch = cb;
+  }
 }
 
 /**
- * 串联操作
- * @param  {...any} fs 输入任意
+ * 创建一个步骤引擎实例
+ * @param {*} name 实例的名字
  */
-const Chain = (...fs) => () => _Chain(fs, 0, null);
-const C = Chain;
+const Flow = name => new StepFlow(name);
+const F = Flow;
 
-/**
- * 映射操作，主要针对Group的结果进行映射修改，类似Array的mao
- * @param {*} gs Group的返回值
- * @param {*} cb 针对group中的每一个值操作
- */
-const Map = (gs, cb = (val, idx) => 0) => {
-    return () => gs().then(r => r.map(cb));
+class Test {
+  constructor() {
+    new StepFlow()
+      .step("t1", () => {
+        this.log("step-1");
+      })
+      .step("t2", () => {
+        this.log("step-2");
+        return ["t4", "t4params hereserser"];
+      })
+      .step("t3", () => {
+        this.log("step-3");
+      })
+      .step("t4", () => {
+        this.log("step-4");
+      })
+      .step("t5-promise", () => {
+        return new Promise(resolve => resolve(0))
+          .then(() => {
+            this.log("promise", "tiuemout");
+          })
+          .then(() => "t6")
+          .then(() => Promise.reject("reject error"));
+      })
+      .step("t6", () => false)
+      .catch(ex => {
+        this.log("exception", ex);
+      });
+  }
+  log(e) {
+    console.log("++++", e, "++++");
+  }
 }
-const M = Map;
-
-/**
- * 先group，再chain
- * @param {*} reduce chain函数
- * @param  {...any} gs group操作
- */
-const Chord = (reduce, ...gs) => {
-    return () => G(...gs)().then(r => reduce(r));
-};
-const H = Chord;
-
-/**
- * 类似group，但是每一个promise都有独立的回掉
- * @param {*} cb 独立回掉
- * @param  {...any} fs promise参数
- */
-const AnyOne = (cb = (val, idx) => val, ...fs) => {
-    return G(...fs.map((v, i) => P(E(v)).then(vs => cb(vs, i))));
-}
-const A = AnyOne;
-
+// new Test();
 module.exports = {
-    Group, G, // group：编组操作
-    Chain, C, // chain：串联操作
-    Map, M, //   Map： 映射操作
-    Chord, H, AnyOne, A
-}
+    Flow, F
+};
