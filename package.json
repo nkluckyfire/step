@@ -1,10 +1,10 @@
 {
-  "name": "jsflow",
+  "name": "step-arrange",
   "version": "1.0.0",
   "description": "javascript framework for flow",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test"
+    "test": "node example.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "chrod",
     "map"
   ],
-  "author": "aosyang",
+  "author": "luckyfire",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nkluckyfire/step/issues"
