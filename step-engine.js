@@ -100,7 +100,7 @@ class StepEngine {
  * @param {*} name 实例的名字
  */
 const Engine = name => new StepEngine(name);
-const E = Engine;
+const N = Engine;
 
 class Test {
   constructor() {
@@ -137,5 +137,5 @@ class Test {
 }
 // new Test();
 module.exports = {
-    Engine, E
+    Engine, N
 };
