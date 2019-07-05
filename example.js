@@ -2,7 +2,7 @@
  * @file step.js, all data from server function here
  * @author aosyang<luckyfire@qq.com>
  */
-const {G, Group, Chain, C, Map, M, Chord, H, AnyOne, A} = require("./step-flow");
+const {G, Group, Chain, C, Map, M, Chord, H, AnyOne, A} = require("./step-arrange");
 
 const vs = (...v) => {
     console.log(...v);
