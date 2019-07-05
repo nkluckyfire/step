@@ -1,6 +1,6 @@
 {
   "name": "step-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "步骤引擎，步骤编排与跳步。基于promise，对JavaScript的异步操作提供便捷的编组、串联、跳转操作",
   "main": "index.js",
   "scripts": {
