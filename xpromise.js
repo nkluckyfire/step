@@ -59,7 +59,7 @@ class XPromise extends Promise {
   }
 }
 
-module,exports = XPromise;
+module.exports = XPromise;
 
 
 

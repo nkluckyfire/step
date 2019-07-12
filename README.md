@@ -15,7 +15,7 @@ npm install step-engine
 * 引入
 
 ```javascript
-const {G, Group, C, Chain, F, Flow} = require('step-arrange');
+const {G, Group, C, Chain, L, Flow} = require('step-arrange');
 ```
 
 * 编排Group与Chain
@@ -138,7 +138,7 @@ G,C,M,H可以任意组合,在实际调用()之前，都是生成的函数签名
 ## 使用说明
 
 ```javascript
-F('instance-name').step('step-name', () => {
+L('instance-name').step('step-name', () => {
     ///
     /// step 执行函数
     ///
@@ -188,7 +188,7 @@ F('name').step('t1', () => {
 loop(step)指定从哪一个步骤开始循环
 
 ```javascript
-F('looptest').step('s1', () => 0).step('s2', () => 0).loop('s1')
+L('looptest').step('s1', () => 0).step('s2', () => 0).loop('s1')
 ```
 
 运行之后，会循环执行s1，s2
@@ -198,7 +198,7 @@ F('looptest').step('s1', () => 0).step('s2', () => 0).loop('s1')
 sleep(ms),指定延时的时间ms，然后执行下一步
 
 ```javascript
-F('sleepTest').sleep(1000).step('s1', () => 0);
+L('sleepTest').sleep(1000).step('s1', () => 0);
 ```
 
 运行之后，1000ms之后执行s1

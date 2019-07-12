@@ -100,7 +100,7 @@ class StepFlow {
  * @param {*} name 实例的名字
  */
 const Flow = name => new StepFlow(name);
-const F = Flow;
+const L = Flow;
 
 class Test {
   constructor() {
@@ -137,5 +137,5 @@ class Test {
 }
 // new Test();
 module.exports = {
-    Flow, F
+    Flow, L
 };
